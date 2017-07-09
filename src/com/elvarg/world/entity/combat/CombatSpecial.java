@@ -41,7 +41,7 @@ import com.elvarg.world.model.dialogue.DialogueManager;
 public enum CombatSpecial {
 
 	//Melee
-	ABYSSAL_WHIP(new int[] { 4151, 21371, 15441, 15442, 15443, 15444 }, 50, 1.04, 1, new AbyssalWhipCombatMethod(), WeaponInterface.WHIP),
+	ABYSSAL_WHIP(new int[] { 4151, 21371, 15441, 15442, 15443, 15444 }, 50, 1.6, 1.9, new AbyssalWhipCombatMethod(), WeaponInterface.WHIP),
 	ABYSSAL_TENTACLE(new int[] { 12006 }, 50, 1.07, 1, new AbyssalTentacleCombatMethod(), WeaponInterface.WHIP),
 
 	BARRELSCHEST_ANCHOR(new int[] { 10887 }, 50, 1.22, 1.35, new BarrelchestAnchorCombatMethod(), WeaponInterface.WARHAMMER),
@@ -61,7 +61,7 @@ public enum CombatSpecial {
 	
 	//Multiple hits 
 	DRAGON_HALBERD(new int[] { 3204 }, 30, 1, 1.19, new DragonHalberdCombatMethod(), WeaponInterface.HALBERD),
-	DRAGON_DAGGER(new int[] { 1215, 1231, 5680, 5698 }, 25, 1.27, 1.3, new DragonDaggerCombatMethod(), WeaponInterface.DRAGON_DAGGER),
+	DRAGON_DAGGER(new int[] { 1215, 1231, 5680, 5698 }, 25, 1.4, 2.0, new DragonDaggerCombatMethod(), WeaponInterface.DRAGON_DAGGER),
 	ABYSSAL_DAGGER(new int[] { 13271 }, 50, 1.10, 1.37, new AbyssalDaggerCombatMethod(), WeaponInterface.ABYSSAL_DAGGER),
 	GRANITE_MAUL(new int[] { 4153, 12848 }, 50, 1.12, 1.18, new GraniteMaulCombatMethod(), WeaponInterface.GRANITE_MAUL),
 	DRAGON_CLAWS(new int[] { 13652 }, 50, 1.3, 1.53, new DragonClawCombatMethod(), WeaponInterface.CLAWS),

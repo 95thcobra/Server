@@ -1,7 +1,5 @@
 package com.elvarg.world.model.container.impl;
 
-import java.util.ArrayList;
-
 import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.definitions.WeaponInterfaces;
 import com.elvarg.world.entity.impl.player.Player;
@@ -12,6 +10,8 @@ import com.elvarg.world.model.container.ItemContainer;
 import com.elvarg.world.model.container.StackType;
 import com.elvarg.world.model.equipment.BonusManager;
 import com.elvarg.world.model.syntax.impl.SearchBank;
+
+import java.util.ArrayList;
 
 /**
  * Pretty decent bank system without flaws.
@@ -72,11 +72,8 @@ public class Bank extends ItemContainer {
 
 		//Update bank title
 		if(getPlayer().isSearchingBank()) {
-			getPlayer().getPacketSender().sendString(5383, "Results for "+getPlayer().getSearchSyntax()+"..")
-			.sendConfig(117, 117);
-		} else {
-			getPlayer().getPacketSender().sendString(5383, "Bank of OSRS Pk")
-			.sendConfig(117, 0);
+			getPlayer().getPacketSender().sendString(5383, "Results for " + getPlayer().getSearchSyntax() + "..")
+					.sendConfig(117, 117);
 		}
 
 		//Send current bank tab being viewed and total tabs!

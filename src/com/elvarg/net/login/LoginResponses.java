@@ -1,6 +1,6 @@
 package com.elvarg.net.login;
 
-import com.elvarg.Elvarg;
+import com.elvarg.Server;
 import com.elvarg.GameConstants;
 import com.elvarg.util.Misc;
 import com.elvarg.util.PlayerPunishment;
@@ -15,7 +15,7 @@ public final class LoginResponses {
 			return LOGIN_WORLD_FULL;
 		}
 		
-		if(Elvarg.isUpdating()) {
+		if(Server.isUpdating()) {
 			return LOGIN_GAME_UPDATE;
 		}
 		

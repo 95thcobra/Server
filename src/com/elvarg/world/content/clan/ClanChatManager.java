@@ -1,15 +1,5 @@
 package com.elvarg.world.content.clan;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map.Entry;
-
 import com.elvarg.util.Misc;
 import com.elvarg.util.PlayerPunishment;
 import com.elvarg.world.entity.impl.npc.NPC;
@@ -18,6 +8,11 @@ import com.elvarg.world.model.Item;
 import com.elvarg.world.model.dialogue.DialogueManager;
 import com.elvarg.world.model.dialogue.DialogueOptions;
 import com.elvarg.world.model.syntax.impl.JoinClanChat;
+
+import java.io.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map.Entry;
 
 /**
  * 100% Runescape clanchat system.
@@ -340,7 +335,7 @@ public class ClanChatManager {
 			return;
 		}
 		if(clan.isBanned(player.getUsername())) {
-			player.getPacketSender().sendMessage("You're currently banned from using this channel. Bans expire after 30 minutes.");
+			player.getPacketSender().sendMessage("You're currently banned from using this channel. Bans.txt expire after 30 minutes.");
 			return;
 		}
 		ClanChatRank rank = clan.getRank(player);

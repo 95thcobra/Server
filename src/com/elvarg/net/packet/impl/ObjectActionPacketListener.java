@@ -1,6 +1,6 @@
 package com.elvarg.net.packet.impl;
 
-import com.elvarg.Elvarg;
+import com.elvarg.Server;
 import com.elvarg.definitions.ObjectDefinition;
 import com.elvarg.engine.task.TaskManager;
 import com.elvarg.engine.task.impl.ForceMovementTask;
@@ -11,14 +11,12 @@ import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketListener;
 import com.elvarg.world.collision.region.RegionClipping;
 import com.elvarg.world.content.Obelisks;
-import com.elvarg.world.entity.combat.CombatSpecial;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.ForceMovement;
 import com.elvarg.world.model.Graphic;
+import com.elvarg.world.model.Locations.Location;
 import com.elvarg.world.model.MagicSpellbook;
 import com.elvarg.world.model.Position;
-import com.elvarg.world.model.Skill;
-import com.elvarg.world.model.Locations.Location;
 import com.elvarg.world.model.dialogue.DialogueManager;
 import com.elvarg.world.model.dialogue.DialogueOptions;
 
@@ -44,14 +42,14 @@ public class ObjectActionPacketListener implements PacketListener {
 
 		//Make sure object exists...
 		if(!RegionClipping.objectExists(id, position)) {
-			Elvarg.getLogger().info("Object with id "+id+" does not exist in region.");
+			Server.getLogger().info("Object with id "+id+" does not exist in region.");
 			return;
 		}
 
 		//Get object definition
 		final ObjectDefinition def = ObjectDefinition.forId(id);
 		if(def == null) {
-			Elvarg.getLogger().info("ObjectDefinition for object "+id+" is null.");
+			Server.getLogger().info("ObjectDefinition for object "+id+" is null.");
 			return;
 		}
 
@@ -142,14 +140,14 @@ public class ObjectActionPacketListener implements PacketListener {
 
 		//Make sure object exists...
 		if(!RegionClipping.objectExists(id, position)) {
-			Elvarg.getLogger().info("Object with id "+id+" does not exist in region.");
+			Server.getLogger().info("Object with id "+id+" does not exist in region.");
 			return;
 		}
 
 		//Get object definition
 		final ObjectDefinition def = ObjectDefinition.forId(id);
 		if(def == null) {
-			Elvarg.getLogger().info("ObjectDefinition for object "+id+" is null.");
+			Server.getLogger().info("ObjectDefinition for object "+id+" is null.");
 			return;
 		}
 
@@ -164,6 +162,8 @@ public class ObjectActionPacketListener implements PacketListener {
 				switch(id) {
 				case BANK_CHEST:
 				case EDGEVILLE_BANK:
+				case GRAND_EXCHANGE_BANK:
+				case SECOND_GRAND_EXCHANGE_BANK:
 					player.getBank(player.getCurrentBankTab()).open();
 					break;
 				case MAGICAL_ALTAR:
@@ -188,14 +188,14 @@ public class ObjectActionPacketListener implements PacketListener {
 
 		//Make sure object exists...
 		if(!RegionClipping.objectExists(id, position)) {
-			Elvarg.getLogger().info("Object with id "+id+" does not exist in region.");
+			Server.getLogger().info("Object with id "+id+" does not exist in region.");
 			return;
 		}
 
 		//Get object definition
 		final ObjectDefinition def = ObjectDefinition.forId(id);
 		if(def == null) {
-			Elvarg.getLogger().info("ObjectDefinition for object "+id+" is null.");
+			Server.getLogger().info("ObjectDefinition for object "+id+" is null.");
 			return;
 		}
 
@@ -230,14 +230,14 @@ public class ObjectActionPacketListener implements PacketListener {
 
 		//Make sure object exists...
 		if(!RegionClipping.objectExists(id, position)) {
-			Elvarg.getLogger().info("Object with id "+id+" does not exist in region.");
+			Server.getLogger().info("Object with id "+id+" does not exist in region.");
 			return;
 		}
 
 		//Get object definition
 		final ObjectDefinition def = ObjectDefinition.forId(id);
 		if(def == null) {
-			Elvarg.getLogger().info("ObjectDefinition for object "+id+" is null.");
+			Server.getLogger().info("ObjectDefinition for object "+id+" is null.");
 			return;
 		}
 
@@ -301,8 +301,10 @@ public class ObjectActionPacketListener implements PacketListener {
 
 	private static final int MAGICAL_ALTAR = 29150;
 	private static final int REJUVENATION_POOL = 29241;
-	private static final int DITCH_PORTAL = 4151;
+	private static final int DITCH_PORTAL = 15478;
 	private static final int EDGEVILLE_BANK = 6943;
+	private static final int GRAND_EXCHANGE_BANK = 10060;
+	private static final int SECOND_GRAND_EXCHANGE_BANK = 10061;
 	private static final int BANK_CHEST = 2693;
 	private static final int WILDERNESS_DITCH = 23271;
 }

@@ -1,16 +1,7 @@
 package com.elvarg.world;
 
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Phaser;
-
-import com.elvarg.Elvarg;
 import com.elvarg.GameConstants;
+import com.elvarg.Server;
 import com.elvarg.util.Misc;
 import com.elvarg.world.content.Toplist;
 import com.elvarg.world.entity.impl.CharacterList;
@@ -22,6 +13,15 @@ import com.elvarg.world.entity.updating.PlayerUpdateSequence;
 import com.elvarg.world.entity.updating.UpdateSequence;
 import com.elvarg.world.model.SecondsTimer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Phaser;
 
 /**
  * Represents the game and its entities.
@@ -163,7 +163,7 @@ public class World {
 			if (player == null || amount >= GameConstants.QUEUED_LOOP_THRESHOLD) {
 				break;
 			}
-			if(player.canLogout() || player.getForcedLogoutTimer().finished() || Elvarg.isUpdating()) {
+			if(player.canLogout() || player.getForcedLogoutTimer().finished() || Server.isUpdating()) {
 				getPlayers().remove(player);
 				player.onLogout();
 				$it.remove();

@@ -14,6 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * An implementation of netty's {@link SimpleChannelInboundHandler} to handle
@@ -23,8 +24,7 @@ import io.netty.handler.timeout.IdleStateEvent;
  */
 @Sharable
 public final class ChannelEventHandler extends SimpleChannelInboundHandler<Object> {
-
-	@Override
+@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 		try {
 
@@ -42,10 +42,10 @@ public final class ChannelEventHandler extends SimpleChannelInboundHandler<Objec
 
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			ReferenceCountUtil.release(msg);
 		}
 	}
-
-
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 

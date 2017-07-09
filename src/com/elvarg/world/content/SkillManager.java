@@ -163,8 +163,8 @@ public class SkillManager {
 	public void setLevel(Skill skill, int level) {
 
 		//Make sure they aren't in wild
-		if(player.getLocation() == Location.WILDERNESS) {
-			player.getPacketSender().sendMessage("You cannot do this in the Wilderness!");
+		if(player.getLocation() == Location.WILDERNESS || player.getLocation() == Location.GRAND_EXCHANGE || player.getLocation() == Location.VARROCK) {
+			player.getPacketSender().sendMessage("You cannot do this here!");
 			return;
 		}
 

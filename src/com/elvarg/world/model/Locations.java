@@ -1,13 +1,11 @@
 package com.elvarg.world.model;
 
-import com.elvarg.world.content.Dueling.DuelState;
 import com.elvarg.world.entity.Entity;
 import com.elvarg.world.entity.combat.CombatFactory;
 import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
 import com.elvarg.world.entity.impl.Character;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.player.Player;
-import com.elvarg.world.model.dialogue.DialogueManager;
 
 public class Locations {
 
@@ -74,14 +72,80 @@ public class Locations {
 				return true;
 			}
 		},
+		GRAND_EXCHANGE(new int[]{3137, 3186, 3139, 3186, 3179, 3188, 3182, 3200, 3182, 3139, 3139, 3147, 3137, 3188}, new int[]{3468, 3472, 3473, 3473, 3478, 3486, 3487, 3516, 3494, 3507, 3473, 3516, 3507, 3516}, false, true, true, true, true, true) {
+			@Override
+			public void process(Player player) {
+				player.getPacketSender().sendWalkableInterface(21200);
+			}
+
+			@Override
+			public void leave(Player player) {
+				BountyHunter.onLeave(player);
+			}
+
+			@Override
+			public void login(Player player) {
+				enter(player);
+			}
+
+			@Override
+			public void enter(Player player) {
+				BountyHunter.onEnter(player);
+				player.getPacketSender().sendMessage("@red@Welcome to Safe Pking. You will NOT lose your items here!");
+			}
+
+			@Override
+			public boolean canTeleport(Player player) {
+				return true;
+			}
+
+			@Override
+			public boolean canAttack(Player attacker, Player target) {
+				return true;
+			}
+		},
+		VARROCK(new int[]{3101, 3268, 3187, 3234}, new int[]{3448, 3468, 3458, 3506}, false, true, true, true, true, true) {
+			@Override
+			public void process(Player player) {
+				player.getPacketSender().sendWalkableInterface(21200);
+			}
+
+			@Override
+			public void leave(Player player) {
+				BountyHunter.onLeave(player);
+			}
+
+			@Override
+			public void login(Player player) {
+				enter(player);
+			}
+
+			@Override
+			public void enter(Player player) {
+				BountyHunter.onEnter(player);
+			}
+
+			@Override
+			public boolean canTeleport(Player player) {
+				return true;
+			}
+
+			@Override
+			public boolean canAttack(Player attacker, Player target) {
+				return true;
+			}
+		},
 		DEFAULT(null, null, false, true, true, true, true, true) {
 			@Override
 			public void process(Player p) {
-				p.getDueling().process();
+				p.getPacketSender().sendWalkableInterface(21300);
+				p.getPacketSender().sendInteractionOption("null", 2, true);
+				p.getPacketSender().sendInteractionOption("null", 1, false);
 			}
 			@Override
 			public boolean canAttack(Player attacker, Player target) {
-				if(attacker.getDueling().getState() == DuelState.IN_DUEL) {
+				//TODO: Remove this.
+				/*if(attacker.getDueling().getState() == DuelState.IN_DUEL) {
 					if(target.getDueling().getState() == DuelState.IN_DUEL) {
 						return true;
 					}
@@ -89,15 +153,15 @@ public class Locations {
 						|| target.getDueling().getState() == DuelState.STARTING_DUEL) {
 					DialogueManager.sendStatement(attacker, "The duel hasn't started yet!");
 					return false;
-				}
+				}*/
 				return false;
 			}
 			@Override
 			public boolean canTeleport(Player player) {
-				if(player.getDueling().inDuel()) {
+				/*if(player.getDueling().inDuel()) {
 					DialogueManager.sendStatement(player, "You cannot teleport in a duel!");
 					return false;
-				}
+				}*/
 				return true;
 			}
 		};

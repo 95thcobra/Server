@@ -1,14 +1,12 @@
 package com.elvarg.net.packet.impl;
 
-import com.elvarg.Elvarg;
+import com.elvarg.Server;
 import com.elvarg.GameConstants;
 import com.elvarg.definitions.WeaponInterfaces;
 import com.elvarg.net.packet.Packet;
-import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketListener;
 import com.elvarg.util.Misc;
 import com.elvarg.world.content.Dueling.DuelRule;
-import com.elvarg.world.entity.combat.CombatSpecial;
 import com.elvarg.world.entity.combat.magic.Autocasting;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Flag;
@@ -81,7 +79,7 @@ public class EquipPacketListener implements PacketListener {
 
 					//Item hasn't been added yet?
 					if(equipmentSlot == -1) {
-						Elvarg.getLogger().info("Attempting to equip item "+item.getId()+" which has no definition.");
+						Server.getLogger().info("Attempting to equip item "+item.getId()+" which has no definition.");
 						return;
 					}
 

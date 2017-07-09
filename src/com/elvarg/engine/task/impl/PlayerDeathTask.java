@@ -1,31 +1,21 @@
 package com.elvarg.engine.task.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.elvarg.GameConstants;
 import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.engine.task.Task;
 import com.elvarg.world.content.ItemsKeptOnDeath;
 import com.elvarg.world.content.PrayerHandler;
-import com.elvarg.world.content.Presetables;
-import com.elvarg.world.content.Dueling.DuelState;
 import com.elvarg.world.entity.combat.CombatFactory;
 import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
 import com.elvarg.world.entity.combat.bountyhunter.Emblem;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.grounditems.GroundItemManager;
-import com.elvarg.world.model.Animation;
-import com.elvarg.world.model.BrokenItem;
-import com.elvarg.world.model.Flag;
-import com.elvarg.world.model.GroundItem;
-import com.elvarg.world.model.Item;
+import com.elvarg.world.model.*;
 import com.elvarg.world.model.Locations.Location;
-import com.elvarg.world.model.PlayerRights;
-import com.elvarg.world.model.Position;
-import com.elvarg.world.model.Priority;
-import com.elvarg.world.model.Skill;
 import com.elvarg.world.model.movement.MovementStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a player's death task, through which the process of dying is handled,
@@ -193,9 +183,9 @@ public class PlayerDeathTask extends Task {
 
 				player.moveTo(GameConstants.DEFAULT_POSITION.copy());
 
-				if(player.isOpenPresetsOnDeath()) {
+				/*if(player.isOpenPresetsOnDeath()) {
 					Presetables.open(player);
-				}
+				}*/
 
 				player.setUntargetable(false);
 				stop();

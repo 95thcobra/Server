@@ -1,13 +1,9 @@
 package com.elvarg.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.elvarg.Server;
 
-import com.elvarg.Elvarg;
+import java.io.*;
+import java.util.ArrayList;
 
 public class PlayerPunishment {
 
@@ -108,7 +104,7 @@ public class PlayerPunishment {
 
 	public static void reloadIPBans() {
 		IPSBanned.clear();
-		initializeList(BAN_DIRECTORY, "IPBans", IPSBanned);
+		initializeList(BAN_DIRECTORY, "IPBans.txt", IPSBanned);
 	}
 
 	public static void reloadIPMutes() {
@@ -117,7 +113,7 @@ public class PlayerPunishment {
 	}
 
 	public static void deleteFromFile(String file, String name) {
-		Elvarg.submit(() -> {
+		Server.submit(() -> {
 			try {
 				BufferedReader r = new BufferedReader(new FileReader(file));
 				ArrayList<String> contents = new ArrayList<String>();
@@ -145,7 +141,7 @@ public class PlayerPunishment {
 	}
 
 	public static void addToFile(String file, String data) {
-		Elvarg.submit(() -> {
+		Server.submit(() -> {
 			try {
 				BufferedWriter out = new BufferedWriter(new FileWriter(file, true));
 				try {

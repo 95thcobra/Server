@@ -37,17 +37,17 @@ public class GameConstants {
 	/**
 	 * The current game/client version.
 	 */
-	public static final int GAME_VERSION = 3;
+	public static final int GAME_VERSION = 1;
 
 	/**
 	 * The secure game UID /Unique Identifier/ 
 	 */
-	public static final int GAME_UID = 4 >> 1;
+	public static final int GAME_UID = 7 >> 1096;
 
 	/**
 	 *  The default position in game.
 	 */
-	public static final Position DEFAULT_POSITION = new Position(3093, 3509);
+	public static final Position DEFAULT_POSITION = new Position(3164, 3483);
 	
 	/**
 	 * Blood money.
@@ -76,7 +76,7 @@ public class GameConstants {
 		{
 				{0, 2423}, {1, 24000}, {2, 31000}, {3, 3213}, {4, 1644}, {5, 5608}, {6, -1}, //Row 1
 
-				{7, 37128}, {8, 5065}, {9, 5715}, {10, 2449}, {11, 42500}, {12, 147}, {13, 32000} //ROw 2
+				{7, 37128}, {8, 5065}, {9, 5715}, {10, 2449}, {11, 42500}, {12, 147}, {13, -1} //ROw 2
 		};
 
 	/**

@@ -3,13 +3,13 @@
 		"npcId": 315,
         "name": "Emblem Trader",
 		"examine": "Helps you with any PvP-related issues.",
-		"walk-radius": 2
+		"walk-radius": 0
     }, 
 	{
 		"npcId": 1306,
         "name": "Make-over mage",
 		"examine": "Changes peoples looks.",
-		"walk-radius": 2
+		"walk-radius": 0
     }, 
 	{
 		"npcId": 3310,
@@ -25,7 +25,17 @@
 		"npcId": 5792,
         "name": "Party Pete",
 		"examine": "He seems to know how to have fun!"
-    }, 
+    },
+	{
+		"npcId": 3343,
+        "name": "Tafani",
+		"examine": "This doctor really knows her stuff."
+    },
+	{
+		"npcId": 400,
+        "name": "Banker",
+		"examine": "The bank of LocusPk."
+    },
 	{
 		"npcId": 506,
         "name": "Shop keeper",

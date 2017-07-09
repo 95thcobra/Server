@@ -34,7 +34,7 @@ public class SpawnItemPacketListener implements PacketListener {
 		}
 
 		//Check if player busy..
-		if(player.busy() || player.getLocation() == Location.WILDERNESS) {
+		if(player.busy() || player.getLocation() == Location.WILDERNESS || player.getLocation() == Location.GRAND_EXCHANGE || player.getLocation() == Location.VARROCK) {
 			player.getPacketSender().sendMessage("You cannot do that right now.");
 			return;
 		}

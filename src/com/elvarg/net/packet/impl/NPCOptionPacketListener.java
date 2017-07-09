@@ -14,6 +14,7 @@ import com.elvarg.world.entity.combat.magic.CombatSpells;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.BrokenItem;
+import com.elvarg.world.model.Graphic;
 import com.elvarg.world.model.PlayerRights;
 import com.elvarg.world.model.SkullType;
 import com.elvarg.world.model.container.impl.Shop;
@@ -40,124 +41,135 @@ public class NPCOptionPacketListener implements PacketListener {
 					return;
 				}
 				switch(npc.getId()) {
-				
-				case SHOP_KEEPER:
-					Shop.open(player, Shop.GENERAL_SHOP);
-					break;
 
-				case PARTY_PETE:
-					Shop.open(player, Shop.GAMBLING_SHOP);
-					break;
-					
-				case MAKE_OVER_MAGE:
-					player.getPacketSender().sendInterfaceRemoval().sendInterface(3559);
-					player.getAppearance().setCanChangeAppearance(true);
-					break;
+					case SHOP_KEEPER:
+						Shop.open(player, Shop.GENERAL_SHOP);
+						break;
 
-				case EMBLEM_TRADER:
-					//And then start dialogue
-					DialogueManager.start(player, 0);
-					//Set dialogue options
-					player.setDialogueOptions(new DialogueOptions() {
-						@Override
-						public void handleOption(Player player, int option) {
-							switch(option) {
-							case 1:
-								//Open pvp shop
-								Shop.open(player, Shop.PVP_SHOP);
-								break;
-							case 2:
-								//Sell emblems option
-								player.setDialogueOptions(new DialogueOptions() {
-									@Override
-									public void handleOption(Player player, int option) {
-										if(option == 1) {
-											int cost = BountyHunter.getValueForEmblems(player, true);
-											player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
-											DialogueManager.start(player, 4);
+					case BANKER:
+						player.getBank(player.getCurrentBankTab()).open();
+						break;
+
+					case PARTY_PETE:
+						Shop.open(player, Shop.GAMBLING_SHOP);
+						break;
+
+					case TAFANI:
+						player.getPacketSender().sendMessage("You feel slightly renewed.");
+						player.performGraphic(new Graphic(436));
+						player.restart(false);
+						DialogueManager.start(player, 961);
+						break;
+
+					case MAKE_OVER_MAGE:
+						player.getPacketSender().sendInterfaceRemoval().sendInterface(3559);
+						player.getAppearance().setCanChangeAppearance(true);
+						break;
+
+					case EMBLEM_TRADER:
+						//And then start dialogue
+						DialogueManager.start(player, 0);
+						//Set dialogue options
+						player.setDialogueOptions(new DialogueOptions() {
+							@Override
+							public void handleOption(Player player, int option) {
+								switch(option) {
+									case 1:
+										//Open pvp shop
+										Shop.open(player, Shop.PVP_SHOP);
+										break;
+									case 2:
+										//Sell emblems option
+										player.setDialogueOptions(new DialogueOptions() {
+											@Override
+											public void handleOption(Player player, int option) {
+												if(option == 1) {
+													int cost = BountyHunter.getValueForEmblems(player, true);
+													player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
+													DialogueManager.start(player, 4);
+												} else {
+													player.getPacketSender().sendInterfaceRemoval();
+												}
+											}
+										});
+										int value = BountyHunter.getValueForEmblems(player, false);
+										if(value > 0) {
+											player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
+											DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");
 										} else {
-											player.getPacketSender().sendInterfaceRemoval();
+											DialogueManager.start(player, 5);
 										}
-									}
-								});
-								int value = BountyHunter.getValueForEmblems(player, false);
-								if(value > 0) {
-									player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
-									DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");
-								} else {
-									DialogueManager.start(player, 5);
+										break;
+									case 3:
+										//Skull me option
+										if(player.isSkulled()) {
+											DialogueManager.start(player, 3);
+										} else {
+											DialogueManager.start(player, 22);
+											player.setDialogueOptions(new DialogueOptions() {
+												@Override
+												public void handleOption(Player player, int option) {
+													if(option == 1) {
+														CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
+													} else if(option == 2) {
+														CombatFactory.skull(player, SkullType.RED_SKULL, 300);
+													}
+													player.getPacketSender().sendInterfaceRemoval();
+												}
+											});
+										}
+										break;
+									case 4:
+										//Cancel option
+										player.getPacketSender().sendInterfaceRemoval();
+										break;
 								}
-								break;
-							case 3:
-								//Skull me option
-								if(player.isSkulled()) {
-									DialogueManager.start(player, 3);
-								} else {
-									DialogueManager.start(player, 22);
+							}
+						});
+						break;
+
+					case PERDU:
+						//Set dialogue options
+						player.setDialogueOptions(new DialogueOptions() {
+							@Override
+							public void handleOption(Player player, int option) {
+								if(option == 1) {
+
+									int cost = BrokenItem.getRepairCost(player);
+
 									player.setDialogueOptions(new DialogueOptions() {
 										@Override
 										public void handleOption(Player player, int option) {
 											if(option == 1) {
-												CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
-											} else if(option == 2) {
-												CombatFactory.skull(player, SkullType.RED_SKULL, 300);
+												BrokenItem.repair(player);
+											} else {
+												player.getPacketSender().sendInterfaceRemoval();
 											}
-											player.getPacketSender().sendInterfaceRemoval();
 										}
 									});
-								}
-								break;
-							case 4:
-								//Cancel option
-								player.getPacketSender().sendInterfaceRemoval();
-								break;
-							}
-						}
-					});
-					break;
-					
-				case PERDU:
-					//Set dialogue options
-					player.setDialogueOptions(new DialogueOptions() {
-						@Override
-						public void handleOption(Player player, int option) {
-							if(option == 1) {
-								
-								int cost = BrokenItem.getRepairCost(player);
-								
-								player.setDialogueOptions(new DialogueOptions() {
-									@Override
-									public void handleOption(Player player, int option) {
-										if(option == 1) {
-											BrokenItem.repair(player);
-										} else {
-											player.getPacketSender().sendInterfaceRemoval();
-										}
+
+									if(cost > 0) {
+										player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
+										DialogueManager.sendStatement(player, "It will cost you "+cost+" blood money to fix your broken items. Agree?");
+									} else {
+										DialogueManager.start(player, 20);
 									}
-								});								
-								
-								if(cost > 0) {
-									player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
-									DialogueManager.sendStatement(player, "It will cost you "+cost+" blood money to fix your broken items. Agree?");
+
 								} else {
-									DialogueManager.start(player, 20);
+									player.getPacketSender().sendInterfaceRemoval();
 								}
-								
-							} else {
-								player.getPacketSender().sendInterfaceRemoval();
 							}
-						}
-					});
-					
-					//Start main dialogue
-					DialogueManager.start(player, 19);
-					break;
+						});
+
+						//Start main dialogue
+						DialogueManager.start(player, 19);
+						break;
 
 
-				case FINANCIAL_ADVISOR:
-					DialogueManager.start(player, 15);
-					//Removed
-					break;
+					case FINANCIAL_ADVISOR:
+						DialogueManager.start(player, 15);
+						//Removed
+						break;
 
 
 				}
@@ -183,9 +195,20 @@ public class NPCOptionPacketListener implements PacketListener {
 			public void execute() {
 				switch(npc.getId()) {
 
-				case EMBLEM_TRADER:
-					Shop.open(player, Shop.PVP_SHOP);
-					break;
+					case EMBLEM_TRADER:
+						Shop.open(player, Shop.PVP_SHOP);
+						break;
+
+					case BANKER:
+						player.getBank(player.getCurrentBankTab()).open();
+						break;
+
+					case TAFANI:
+						player.getPacketSender().sendMessage("You feel slightly renewed.");
+						player.performGraphic(new Graphic(436));
+						player.restart(false);
+						DialogueManager.start(player, 961);
+						break;
 
 				}
 				npc.setPositionToFace(player.getPosition());
@@ -210,28 +233,28 @@ public class NPCOptionPacketListener implements PacketListener {
 			public void execute() {
 				switch(npc.getId()) {
 
-				case EMBLEM_TRADER:
-					//Sell emblems option
-					player.setDialogueOptions(new DialogueOptions() {
-						@Override
-						public void handleOption(Player player, int option) {
-							if(option == 1) {
-								int cost = BountyHunter.getValueForEmblems(player, true);
-								player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
-								DialogueManager.start(player, 4);
-							} else {
-								player.getPacketSender().sendInterfaceRemoval();
+					case EMBLEM_TRADER:
+						//Sell emblems option
+						player.setDialogueOptions(new DialogueOptions() {
+							@Override
+							public void handleOption(Player player, int option) {
+								if(option == 1) {
+									int cost = BountyHunter.getValueForEmblems(player, true);
+									player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
+									DialogueManager.start(player, 4);
+								} else {
+									player.getPacketSender().sendInterfaceRemoval();
+								}
 							}
+						});
+						int value = BountyHunter.getValueForEmblems(player, false);
+						if(value > 0) {
+							player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
+							DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");
+						} else {
+							DialogueManager.start(player, 5);
 						}
-					});
-					int value = BountyHunter.getValueForEmblems(player, false);
-					if(value > 0) {
-						player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
-						DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");
-					} else {
-						DialogueManager.start(player, 5);
-					}
-					break;
+						break;
 				}
 
 				npc.setPositionToFace(player.getPosition());
@@ -254,24 +277,24 @@ public class NPCOptionPacketListener implements PacketListener {
 			@Override
 			public void execute() {
 				switch(npc.getId()) {
-				case EMBLEM_TRADER:
-					if(player.isSkulled()) {
-						DialogueManager.start(player, 3);
-					} else {
-						DialogueManager.start(player, 22);
-						player.setDialogueOptions(new DialogueOptions() {
-							@Override
-							public void handleOption(Player player, int option) {
-								if(option == 1) {
-									CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
-								} else if(option == 2) {
-									CombatFactory.skull(player, SkullType.RED_SKULL, 300);
+					case EMBLEM_TRADER:
+						if(player.isSkulled()) {
+							DialogueManager.start(player, 3);
+						} else {
+							DialogueManager.start(player, 22);
+							player.setDialogueOptions(new DialogueOptions() {
+								@Override
+								public void handleOption(Player player, int option) {
+									if(option == 1) {
+										CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
+									} else if(option == 2) {
+										CombatFactory.skull(player, SkullType.RED_SKULL, 300);
+									}
+									player.getPacketSender().sendInterfaceRemoval();
 								}
-								player.getPacketSender().sendInterfaceRemoval();
-							}
-						});
-					}
-					break;
+							});
+						}
+						break;
 				}
 				npc.setPositionToFace(player.getPosition());
 				player.setPositionToFace(npc.getPosition());
@@ -348,24 +371,24 @@ public class NPCOptionPacketListener implements PacketListener {
 			return;
 		}
 		switch (packet.getOpcode()) {
-		case PacketConstants.ATTACK_NPC_OPCODE:
-			attackNPC(player, packet);
-			break;
-		case PacketConstants.FIRST_CLICK_OPCODE:
-			firstClick(player, packet);
-			break;
-		case PacketConstants.SECOND_CLICK_OPCODE:
-			handleSecondClick(player, packet);
-			break;
-		case PacketConstants.THIRD_CLICK_OPCODE:
-			handleThirdClick(player, packet);
-			break;
-		case PacketConstants.FOURTH_CLICK_OPCODE:
-			handleFourthClick(player, packet);
-			break;
-		case PacketConstants.MAGE_NPC_OPCODE:
-			mageNpc(player, packet);
-			break;
+			case PacketConstants.ATTACK_NPC_OPCODE:
+				attackNPC(player, packet);
+				break;
+			case PacketConstants.FIRST_CLICK_OPCODE:
+				firstClick(player, packet);
+				break;
+			case PacketConstants.SECOND_CLICK_OPCODE:
+				handleSecondClick(player, packet);
+				break;
+			case PacketConstants.THIRD_CLICK_OPCODE:
+				handleThirdClick(player, packet);
+				break;
+			case PacketConstants.FOURTH_CLICK_OPCODE:
+				handleFourthClick(player, packet);
+				break;
+			case PacketConstants.MAGE_NPC_OPCODE:
+				mageNpc(player, packet);
+				break;
 		}
 	}
 
@@ -375,5 +398,7 @@ public class NPCOptionPacketListener implements PacketListener {
 	private static final int FINANCIAL_ADVISOR = 3310;
 	private static final int PERDU = 7456;
 	private static final int PARTY_PETE = 5792;
+	private static final int BANKER = 400;
+	private static final int TAFANI = 3343;
 	private static final int SHOP_KEEPER = 506;
 }

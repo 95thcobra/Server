@@ -1,8 +1,5 @@
 package com.elvarg.world.content;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.elvarg.world.content.Dueling.DuelRule;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Animation;
@@ -10,6 +7,9 @@ import com.elvarg.world.model.Item;
 import com.elvarg.world.model.Priority;
 import com.elvarg.world.model.Skill;
 import com.elvarg.world.model.dialogue.DialogueManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Consumables are items that players can use to restore stats/points.
@@ -104,7 +104,8 @@ public class Food {
 			
 			String e = food.toString() == "BANDAGES" ? "use" : "eat";
 			player.getPacketSender().sendMessage("You "+e+" the " + food.name + ".");
-			player.setHitpoints(player.getHitpoints() + heal);		
+			player.getPacketSender().sendMessage("It heals some lifepoints.");
+			player.setHitpoints(player.getHitpoints() + heal);
 			
 		}
 	}

@@ -1,6 +1,6 @@
 package com.elvarg.net.packet.impl;
 
-import com.elvarg.Elvarg;
+import com.elvarg.Server;
 import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.definitions.NpcDropDefinition;
 import com.elvarg.definitions.ShopDefinition;
@@ -33,6 +33,8 @@ import com.elvarg.world.model.Skill;
 import com.elvarg.world.model.SkullType;
 import com.elvarg.world.model.container.impl.Bank;
 import com.elvarg.world.model.dialogue.DialogueManager;
+
+import java.io.IOException;
 
 
 /**
@@ -136,7 +138,7 @@ public class CommandPacketListener implements PacketListener {
 			}
 			player.getInventory().add(565, 1000).add(555, 1000).add(560, 1000);
 		} else if(parts[0].startsWith("donate") || parts[0].startsWith("store")) {
-			player.getPacketSender().sendURL("http://osrspk.com/store");
+			player.getPacketSender().sendURL("http://lotuspk.com/store");
 		} else if(parts[0].startsWith("claim")) {
 			player.getPacketSender().sendMessage("To claim purchased items, please talk to the Financial Advisor at home.");
 		} else if(parts[0].startsWith("players")) {
@@ -524,7 +526,7 @@ public class CommandPacketListener implements PacketListener {
 		if (parts[0].equals("update")) {
 			int time = Integer.parseInt(parts[1]);
 			if(time > 0) {
-				Elvarg.setUpdating(true);
+				Server.setUpdating(true);
 				for (Player players : World.getPlayers()) {
 					if (players == null)
 						continue;
@@ -539,7 +541,13 @@ public class CommandPacketListener implements PacketListener {
 							}
 						}
 						ClanChatManager.save();
-						Elvarg.getLogger().info("Update task finished!");
+						Server.getLogger().info("Update task finished!");
+						try {
+							Runtime.getRuntime().exec("cmd /c start Server.jar");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						System.exit(1);
 						stop();
 					}
 				});

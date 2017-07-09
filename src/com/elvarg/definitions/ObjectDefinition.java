@@ -153,7 +153,7 @@ public final class ObjectDefinition {
 		}
 		if(id == 4150) {
 			objectDef.name = "Bank portal";
-		} else if(id == 4151) {
+		} else if(id == 15478) {
 			objectDef.name = "Ditch portal";
 		}
 		

@@ -1,17 +1,17 @@
 package com.elvarg.world.entity.impl.player;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-
-import com.elvarg.Elvarg;
+import com.elvarg.Server;
 import com.elvarg.util.Misc;
 import com.elvarg.world.model.container.impl.Bank;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
 
 public  class PlayerSaving {
 
@@ -106,7 +106,7 @@ public  class PlayerSaving {
 
 		} catch (Exception e) {
 			// An error happened while saving.
-			Elvarg.getLogger().log(Level.WARNING,
+			Server.getLogger().log(Level.WARNING,
 					"An error has occured while saving a character file!", e);
 		}
 	}

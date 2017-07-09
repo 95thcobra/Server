@@ -1,23 +1,22 @@
 package com.elvarg.net.codec;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.List;
-import java.util.Random;
-
-import com.elvarg.Elvarg;
-import com.elvarg.net.NetworkConstants;
+import com.elvarg.Server;
 import com.elvarg.net.ByteBufUtils;
+import com.elvarg.net.NetworkConstants;
 import com.elvarg.net.login.LoginDetailsMessage;
 import com.elvarg.net.login.LoginResponses;
 import com.elvarg.net.login.LoginUtils;
 import com.elvarg.net.security.IsaacRandom;
 import com.elvarg.util.Misc;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Decodes login.
@@ -68,7 +67,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 		
 		int request = buffer.readUnsignedByte();
 		if (request != NetworkConstants.LOGIN_REQUEST_OPCODE) {
-			Elvarg.getLogger().info("Session rejected for bad login request id: "+request);
+			Server.getLogger().info("Session rejected for bad login request id: "+request);
 			LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_BAD_SESSION_ID);
 			return;
 		}
@@ -92,7 +91,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 		int connectionType = buffer.readUnsignedByte();
 		if (connectionType != NetworkConstants.NEW_CONNECTION_OPCODE
 				&& connectionType != NetworkConstants.RECONNECTION_OPCODE) {
-			Elvarg.getLogger().info("Session rejected for bad connection type id: "+connectionType);
+			Server.getLogger().info("Session rejected for bad connection type id: "+connectionType);
 			LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_BAD_SESSION_ID);
 			return;
 		}
@@ -111,7 +110,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 
 
 		if (encryptedLoginBlockSize != buffer.readableBytes()) {
-			Elvarg.getLogger().info(String.format("[host= %s] encryptedLoginBlockSize != readable bytes",
+			Server.getLogger().info(String.format("[host= %s] encryptedLoginBlockSize != readable bytes",
 					ctx.channel().remoteAddress()));
 			LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_REJECT_SESSION);
 			return;
@@ -121,7 +120,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 
 			int magicId = buffer.readUnsignedByte();
 			if(magicId != 0xFF) {
-				Elvarg.getLogger().info(String.format("[host= %s] [magic= %d] was rejected for the wrong magic value.",
+				Server.getLogger().info(String.format("[host= %s] [magic= %d] was rejected for the wrong magic value.",
 						ctx.channel().remoteAddress(), magicId));
 				LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_REJECT_SESSION);
 				return;
@@ -131,7 +130,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 
 			int memory =  buffer.readByte();
 			if (memory != 0 && memory != 1) {
-				Elvarg.getLogger().info(String.format("[host= %s] was rejected for having the memory setting.",
+				Server.getLogger().info(String.format("[host= %s] was rejected for having the memory setting.",
 						ctx.channel().remoteAddress()));
 				LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_REJECT_SESSION);
 				return;
@@ -154,7 +153,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
 
 			int securityId = rsaBuffer.readByte();
 			if(securityId != 10) {
-				Elvarg.getLogger().info(String.format("[host= %s] was rejected for having the wrong securityId.",
+				Server.getLogger().info(String.format("[host= %s] was rejected for having the wrong securityId.",
 						ctx.channel().remoteAddress()));
 				LoginUtils.sendResponseCode(ctx, LoginResponses.LOGIN_REJECT_SESSION);
 				return;

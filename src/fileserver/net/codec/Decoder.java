@@ -1,9 +1,5 @@
 package fileserver.net.codec;
 
-import java.util.List;
-
-import com.elvarg.Elvarg;
-
 import fileserver.FileServer;
 import fileserver.FileServerConstants;
 import io.netty.buffer.ByteBuf;
@@ -11,6 +7,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+
+import java.util.List;
 
 /**
  * A {@link ByteToMessageDecoder} used for decoding incoming data.

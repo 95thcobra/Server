@@ -153,7 +153,7 @@
         "lines": 4,
         "line1": "Hello there. I'm here to give players items which",
 		"line2": "they have purchased from the online store at",
-		"line3": "@whi@www.lotuspk.gq/store",
+		"line3": "@whi@www.lotuspk.com/store",
 		"line4": "Have you bought any?",
         "next": 7,
         "npcId": 3310
@@ -164,7 +164,7 @@
         "anim": "DEFAULT",
         "lines": 2,
         "line1": "I've added the items to your account.",
-		"line2": "Thank you for supporting Lotus Pk!",
+		"line2": "Thank you for supporting LotusPk!",
         "next": -1,
         "npcId": 3310
     },
@@ -198,6 +198,15 @@
 		"line2": "I'll do it for a fairly low price.",
         "next": 7,
         "npcId": 7456
+    },
+    {
+        "id": 961,
+        "type": "NPC_STATEMENT",
+        "anim": "HAPPY",
+        "lines": 1,
+        "line1": "I restored your hitpoints and prayer points.",
+        "next": -1,
+        "npcId": 3343
     },
 	{
         "id": 20,

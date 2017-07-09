@@ -1,11 +1,11 @@
 package com.elvarg.net;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 
 
 public final class ByteBufUtils {
@@ -91,7 +91,7 @@ public final class ByteBufUtils {
 	/**
 	 * Gets the host address of the user logging in.
 	 *
-	 * @param ctx The context of this channel.
+	 * @param channel The context of this channel.
 	 *
 	 * @return The host address of this connection.
 	 */

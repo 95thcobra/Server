@@ -1,10 +1,5 @@
 package com.elvarg.world.entity.combat.bountyhunter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import com.elvarg.GameConstants;
 import com.elvarg.net.SessionState;
 import com.elvarg.util.Misc;
@@ -16,10 +11,15 @@ import com.elvarg.world.model.GroundItem;
 import com.elvarg.world.model.Item;
 import com.elvarg.world.model.Locations.Location;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * Handles the "Bounty Hunter" minigame.
  * Includes Emblems, Wealthtypes, etc.
- * 
+ *
  * @author Professor Oak
  */
 public class BountyHunter {
@@ -106,10 +106,10 @@ public class BountyHunter {
 				//Unassign the player if they've been out of wilderness for too long.
 				if(safeTimer == 0) {
 					unassign(player);
-					
+
 					player.getTargetSearchTimer().start(TARGET_ABANDON_DELAY_SECONDS);
 					player.getPacketSender().sendMessage("You have lost your target.");
-					
+
 					target.get().getPacketSender().sendMessage("You have lost your target and will be given a new one shortly.");
 					target.get().getTargetSearchTimer().start((TARGET_SEARCH_DELAY_SECONDS / 2));
 				}
@@ -189,7 +189,7 @@ public class BountyHunter {
 			//If so, return the other player.
 			if(pair.get().getPlayer1().equals(player)) {
 				return Optional.of(pair.get().getPlayer2());
-			} 
+			}
 
 			//Check if player 2 in the pair is us.
 			//If so, return the other player.
@@ -207,7 +207,7 @@ public class BountyHunter {
 	 */
 	public static Optional<TargetPair> getPairFor(final Player p) {
 		for(TargetPair pair : TARGET_PAIRS) {
-			if(p.equals(pair.getPlayer1()) || 
+			if(p.equals(pair.getPlayer1()) ||
 					p.equals(pair.getPlayer2())) {
 				return Optional.of(pair);
 			}
@@ -218,7 +218,7 @@ public class BountyHunter {
 	/**
 	 * Handles death for a player.
 	 * Rewards the killer.
-	 * 
+	 *
 	 * @param killer
 	 * @param killed
 	 */
@@ -229,11 +229,11 @@ public class BountyHunter {
 
 		//Cache the killed player's killstreak
 		final int enemyKillstreak = killed.getKillstreak();
-		
+
 		//Reset killed player's killstreak
 		if(killed.getKillstreak() > 0) {
 			killed.getPacketSender().sendMessage("You have lost your "+killed.getKillstreak()+" killstreak.");
-		}	
+		}
 		killed.setKillstreak(0);
 
 		//Increment killed player's deaths
@@ -241,7 +241,7 @@ public class BountyHunter {
 
 		//Update interfaces for killed player containing the new deaths etc
 		killed.getPacketSender().sendString(52031, "@or1@Deaths: "+killed.getDeaths()).
-		sendString(52033, "@or1@K/D Ratio: "+killed.getKillDeathRatio());
+				sendString(52033, "@or1@K/D Ratio: "+killed.getKillDeathRatio());
 
 
 		//Remove first index if we've killed 1
@@ -251,30 +251,30 @@ public class BountyHunter {
 
 		//Should the player be rewarded for this kill?
 		boolean rewardPlayer = true;
-		
+
 		//Check if we recently killed this player
-		if(killer.getRecentKills().contains(killed.getHostAddress()) 
+		if(killer.getRecentKills().contains(killed.getHostAddress())
 				|| killer.getHostAddress().equals(killed.getHostAddress())) {
 			rewardPlayer = false;
 		} else {
 			killer.getRecentKills().add(killed.getHostAddress());
 		}
-		
+
 		Optional<Player> target = getTargetFor(killer);
-		
+
 		//Check if the player killed was our target..
 		if(target.isPresent() && target.get().equals(killed)) {
-						
+
 			//Send messages
 			killed.getPacketSender().sendMessage("You were defeated by your target!");
 			killer.getPacketSender().sendMessage("Congratulations, you managed to defeat your target!");
-			
+
 			//Increment killer's target kills
 			killer.incrementTargetKills();
 
 			//Reset targets
 			unassign(killer);
-			
+
 			//If player isnt farming kills..
 			if(rewardPlayer) {
 
@@ -328,29 +328,29 @@ public class BountyHunter {
 				killer.incrementKills();
 			}
 		}
-		
+
 		if(rewardPlayer) {
 
 			//Increment total kills..
 			killer.incrementTotalKills();
-			
+
 			//Increment killstreak..
 			killer.incrementKillstreak();
-			
+
 			//Update interfaces
 			killer.getPacketSender().
-			sendString(52029, "@or1@Killstreak: "+killer.getKillstreak()).
-			sendString(52030, "@or1@Kills: "+killer.getTotalKills()).
-			sendString(52033, "@or1@K/D Ratio: "+killer.getKillDeathRatio());
+					sendString(52029, "@or1@Killstreak: "+killer.getKillstreak()).
+					sendString(52030, "@or1@Kills: "+killer.getTotalKills()).
+					sendString(52033, "@or1@K/D Ratio: "+killer.getKillDeathRatio());
 
 			//Reward player for the kill..
 			int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak()) + (10 * killer.getWildernessLevel());
-			
+
 			if(killer.getInventory().contains(GameConstants.BLOOD_MONEY) || killer.getInventory().getFreeSlots() > 0) {
 				killer.getInventory().add(GameConstants.BLOOD_MONEY, rewardAmount);
 			} else {
 				GroundItemManager.spawnGroundItem(killer, new GroundItem(new Item(GameConstants.BLOOD_MONEY, rewardAmount), killed.getPosition(), killer.getUsername(), killer.getHostAddress(), false, 150, false, -1));
-			}			
+			}
 			killer.getPacketSender().sendMessage("You've received "+rewardAmount+" blood money for that kill!");
 
 			//Check if the killstreak is their highest yet..
@@ -362,11 +362,11 @@ public class BountyHunter {
 			}
 
 		} else {
-			
+
 			//Player is probably farming kills.
 			killer.getPacketSender().sendMessage("You did not receive any rewards for that kill.");
 		}
-		
+
 		//Update interfaces
 		updateInterface(killer);
 		updateInterface(killed);
@@ -387,9 +387,9 @@ public class BountyHunter {
 
 			//Send strings
 			player.getPacketSender()
-			.sendString(TARGET_WEALTH_STRING, "Wealth: "+type.tooltip)
-			.sendString(TARGET_NAME_STRING, target.get().getUsername())
-			.sendString(TARGET_LEVEL_STRING, "Combat: "+target.get().getSkillManager().getCombatLevel());
+					.sendString(TARGET_WEALTH_STRING, "Wealth: "+type.tooltip)
+					.sendString(TARGET_NAME_STRING, target.get().getUsername())
+					.sendString(TARGET_LEVEL_STRING, "Combat: "+target.get().getSkillManager().getCombatLevel());
 
 			//Send wealth type
 			showWealthType(player, type);
@@ -399,9 +399,9 @@ public class BountyHunter {
 
 			//Send strings..
 			player.getPacketSender()
-			.sendString(TARGET_WEALTH_STRING, "---")
-			.sendString(TARGET_NAME_STRING, "None")
-			.sendString(TARGET_LEVEL_STRING, "Combat: ------");
+					.sendString(TARGET_WEALTH_STRING, "---")
+					.sendString(TARGET_NAME_STRING, "None")
+					.sendString(TARGET_LEVEL_STRING, "Combat: ------");
 
 			//Send wealth type..
 			showWealthType(player, WealthType.NO_TARGET);
@@ -409,8 +409,8 @@ public class BountyHunter {
 
 		//Update kda information..
 		player.getPacketSender().sendString(23323, "Targets killed: "+player.getTargetKills())
-		.sendString(23324, "Players killed: "+player.getNormalKills())
-		.sendString(23325, "Deaths: "+player.getDeaths());
+				.sendString(23324, "Players killed: "+player.getNormalKills())
+				.sendString(23325, "Deaths: "+player.getDeaths());
 	}
 
 
@@ -420,7 +420,9 @@ public class BountyHunter {
 	public static void onEnter(Player player) {
 		player.getPacketSender().sendInteractionOption("Attack", 2, true);
 		player.getPacketSender().sendInteractionOption("null", 1, false); //Remove challenge option
-		player.getPacketSender().sendWalkableInterface(23300);
+		if (player.getLocation() == Location.WILDERNESS) {
+			player.getPacketSender().sendWalkableInterface(23300);
+		}
 		updateInterface(player);
 		if(!PLAYERS_IN_WILD.contains(player)) {
 			PLAYERS_IN_WILD.add(player);
@@ -495,7 +497,7 @@ public class BountyHunter {
 	 */
 	private static boolean validTargetContester(Player p) {
 		return !(p == null || !p.isRegistered() || p.getLocation() != Location.WILDERNESS
-				|| p.getSession().getState() != SessionState.LOGGED_IN 
+				|| p.getSession().getState() != SessionState.LOGGED_IN
 				|| p.getWildernessLevel() <= 0 || p.isUntargetable()
 				|| p.getHitpoints() <= 0 || p.isNeedsPlacement()
 				|| getPairFor(p).isPresent());
@@ -509,7 +511,7 @@ public class BountyHunter {
 	 * The delay between each search for a new target.
 	 */
 	private static final int TARGET_SEARCH_DELAY_SECONDS = 80;
-	
+
 	/**
 	 * The delay for abandoning a target
 	 */
