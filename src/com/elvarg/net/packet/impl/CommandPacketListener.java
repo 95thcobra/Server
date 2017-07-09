@@ -111,7 +111,7 @@ public class CommandPacketListener implements PacketListener {
 		}
 	}
 
-	private static void playerCommands(Player player, String command, String[] parts) {
+	private static boolean playerCommands(Player player, String command, String[] parts) {
 		if(parts[0].startsWith("lockxp")) {
 			player.setExperienceLocked(!player.experienceLocked());
 			player.getPacketSender().sendMessage("Lock: "+player.experienceLocked());
@@ -120,27 +120,26 @@ public class CommandPacketListener implements PacketListener {
 		} else if(parts[0].startsWith("veng")) {
 			if(player.busy()) {
 				player.getPacketSender().sendMessage("You cannot do that right now.");
-				return;
+				return false;
 			}
 			if(player.getInventory().getFreeSlots() < 3) {
 				player.getPacketSender().sendMessage("You don't have enough free inventory space to do that.");
-				return;
+				return false;
 			}
 			player.getInventory().add(9075, 1000).add(557, 1000).add(560, 1000);
 		} else if(parts[0].startsWith("barrage")) {
 			if(player.busy()) {
 				player.getPacketSender().sendMessage("You cannot do that right now.");
-				return;
+				return false;
 			}
 			if(player.getInventory().getFreeSlots() < 3) {
 				player.getPacketSender().sendMessage("You don't have enough free inventory space to do that.");
-				return;
+				return false;
 			}
 			player.getInventory().add(565, 1000).add(555, 1000).add(560, 1000);
 		} else if(parts[0].startsWith("donate") || parts[0].startsWith("store")) {
 			player.getPacketSender().sendURL("http://lotuspk.com/store");
-		} else if(parts[0].startsWith("claim")) {
-			player.getPacketSender().sendMessage("To claim purchased items, please talk to the Financial Advisor at home.");
+			//player.getPacketSender().sendMessage("To claim purchased items, please talk to the Financial Advisor at home.");
 		} else if(parts[0].startsWith("players")) {
 			player.getPacketSender().sendMessage("There are currently "+World.getPlayers().size()+" players online and "+BountyHunter.PLAYERS_IN_WILD.size()+" players in the Wilderness.");
 		} else if(parts[0].startsWith("kdr")) {
@@ -156,15 +155,21 @@ public class CommandPacketListener implements PacketListener {
 		} else if(parts[0].startsWith("skull") || parts[0].startsWith("redskull")) {
 			if(CombatFactory.inCombat(player)) {
 				player.getPacketSender().sendMessage("You cannot change that during combat!");
-				return;
+				return false;
 			}
+		} else if(parts[0].startsWith("claim")) {
+			try{
+				player.LotusPay(player, player.getUsername());
+				return true;
+			}catch(Exception e){}
+		}
 			if(parts[0].contains("red")) {
 				CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
 			} else {
 				CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
 			}
+			return false;
 		}
-	}
 
 	private static void donorCommands(Player player, String command, String[] parts) {
 		if(parts[0].startsWith("yell")) {

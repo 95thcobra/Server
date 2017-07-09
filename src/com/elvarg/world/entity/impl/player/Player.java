@@ -1,6 +1,10 @@
 
 package com.elvarg.world.entity.impl.player;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -1348,4 +1352,30 @@ public class Player extends Character {
 	public SecondsTimer getAggressionTolerance() {
 		return aggressionTolerance;
 	}
+	public void LotusPay(Player player, String username){
+		try{
+		username = username.replaceAll(" ","_");
+		String secret = "4d13663a588db08245fa44e863b814fe";
+		URL url = new URL("http://app.gpay.io/api/runescape/"+username+"/"+secret);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+		String results = reader.readLine();
+		if(results.toLowerCase().contains("!error:")){
+
+		}else{
+		String[] ary = results.split(",");
+		     for(int i = 0; i < ary.length; i++){
+		            switch(ary[i]){
+		                case "0":
+		                	player.getPacketSender().sendMessage("@red@Your donation has not been found message a staff member.@red@");
+		                break;
+		                    case "19635": //claws
+		                    	player.setRights(PlayerRights.DONATOR);
+		        				player.getPacketSender().sendMessage("@gre@Thank-you for Donating! You've Recieved Donator Rank!@gre@");
+		                    break;
+
+		            }
+		    }
+		}
+		}catch(IOException e){}
+		}							
 }
