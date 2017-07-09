@@ -1,0 +1,9 @@
+FORMAT:
+✔ = Completed
+☐ = Not Completed
+
+Server:
+ ☐ TODO: make all npcs to rotate
+ ☐ TODO: make grand exchange pvp area
+ ☐ TODO: Fix default area processing
+ ✔ move all npcs to grand exchange
