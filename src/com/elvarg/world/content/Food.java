@@ -104,7 +104,7 @@ public class Food {
 			
 			String e = food.toString() == "BANDAGES" ? "use" : "eat";
 			player.getPacketSender().sendMessage("You "+e+" the " + food.name + ".");
-			player.getPacketSender().sendMessage("It heals some lifepoints.");
+			player.getPacketSender().sendMessage("It heals some health.");
 			player.setHitpoints(player.getHitpoints() + heal);
 			
 		}

@@ -18,9 +18,9 @@ public enum MagicSpellbook {
 	/**
 	 * The MagicSpellBook constructor.
 	 * @param interfaceId	The spellbook's interface id.
-	 * @param message		The message received upon switching to said spellbook.
+	 * @param teleportType		The message received upon switching to said spellbook.
 	 */
-	private MagicSpellbook(int interfaceId, TeleportType teleportType) {
+	MagicSpellbook(int interfaceId, TeleportType teleportType) {
 		this.interfaceId = interfaceId;
 		this.teleportType = teleportType;
 	}

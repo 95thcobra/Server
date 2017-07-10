@@ -1,7 +1,6 @@
 package com.elvarg.world.content;
 
-import java.util.Optional;
-
+import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.world.content.Dueling.DuelRule;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Animation;
@@ -9,6 +8,8 @@ import com.elvarg.world.model.EffectTimer;
 import com.elvarg.world.model.Item;
 import com.elvarg.world.model.Skill;
 import com.elvarg.world.model.dialogue.DialogueManager;
+
+import java.util.Optional;
 
 /**
  * The enumerated type managing consumable potion types.
@@ -179,6 +180,17 @@ public enum PotionConsumable {
 			player.getPacketSender().sendInterfaceRemoval();
 			player.getCombat().reset();
 			player.performAnimation(new Animation(829));
+			String drink = ItemDefinition.forId(item).getName();
+			player.getPacketSender().sendMessage("You drink some of your " + drink + ".");
+			if (drink.endsWith("(4)")) {
+				player.getPacketSender().sendMessage("You have 3 doses of potion left.");
+			} else if (drink.endsWith("(3)")) {
+				player.getPacketSender().sendMessage("You have 2 doses of potion left.");
+			} else if (drink.endsWith("(2)")) {
+				player.getPacketSender().sendMessage("You have 1 dose of potion left.");
+			} else if (drink.endsWith("(1)")) {
+				player.getPacketSender().sendMessage("You have finished your potion.");
+			}
 			player.getPotionTimer().reset();
 			player.getInventory().setItem(slot, getReplacementItem(item)).refreshItems();
 			potion.get().onEffect(player);

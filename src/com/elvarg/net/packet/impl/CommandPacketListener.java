@@ -167,6 +167,7 @@ public class CommandPacketListener implements PacketListener {
 		}
 		if(parts[0].contains("red")) {
 			CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
+			return true;
 		} else {
 			CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
 		}

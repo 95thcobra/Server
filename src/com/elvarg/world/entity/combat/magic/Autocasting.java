@@ -37,6 +37,7 @@ public class Autocasting {
 			player.getPacketSender().sendAutocastId(-1).sendConfig(108, 3);
 		} else {
 			player.getPacketSender().sendAutocastId(spell.spellId()).sendConfig(108, 1);
+			player.getPacketSender().sendMessage("Autocast spell selected.");
 		}
 		player.getCombat().setAutocastSpell(spell);
 		
