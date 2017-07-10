@@ -6,7 +6,7 @@ import com.elvarg.engine.task.TaskManager;
 import com.elvarg.util.Misc;
 import com.elvarg.world.World;
 import com.elvarg.world.content.PrayerHandler.PrayerData;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Flag;
 import com.elvarg.world.model.Graphic;
@@ -163,7 +163,7 @@ public class SkillManager {
 	public void setLevel(Skill skill, int level) {
 
 		//Make sure they aren't in wild
-		if(player.getLocation() == Location.WILDERNESS || player.getLocation() == Location.GRAND_EXCHANGE || player.getLocation() == Location.VARROCK) {
+		if(player.getLocation() == Location.WILDERNESS || player.getLocation() == Location.GRAND_EXCHANGE_PVP || player.getLocation() == Location.VARROCK) {
 			player.getPacketSender().sendMessage("You cannot do this here!");
 			return;
 		}
@@ -203,7 +203,7 @@ public class SkillManager {
 		BonusManager.update(player);
 		WeaponInterfaces.assign(player);
 		PrayerHandler.deactivatePrayers(player);
-		BountyHunter.unassign(player);
+		PvpHandler.unassign(player);
 		player.getUpdateFlag().flag(Flag.PLAYER_APPEARANCE);
 	}
 

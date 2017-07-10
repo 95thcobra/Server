@@ -8,7 +8,7 @@ import java.util.Objects;
 import com.elvarg.util.Misc;
 import com.elvarg.world.content.PrayerHandler.PrayerData;
 import com.elvarg.world.entity.combat.CombatFactory;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.combat.magic.Autocasting;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Item;
@@ -337,7 +337,7 @@ public class Presetables {
 		player.getPacketSender().sendString(19000,combatLevel).sendString(5858, combatLevel);
 		
 		if(newCbLevel != oldCbLevel) {
-			BountyHunter.unassign(player);
+			PvpHandler.unassign(player);
 		}
 		
 		//Send new spellbook

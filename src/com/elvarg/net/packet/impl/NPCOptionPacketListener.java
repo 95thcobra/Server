@@ -8,7 +8,7 @@ import com.elvarg.net.packet.PacketListener;
 import com.elvarg.world.World;
 import com.elvarg.world.content.BossPets;
 import com.elvarg.world.entity.combat.CombatFactory;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.combat.magic.CombatSpell;
 import com.elvarg.world.entity.combat.magic.CombatSpells;
 import com.elvarg.world.entity.impl.npc.NPC;
@@ -84,7 +84,7 @@ public class NPCOptionPacketListener implements PacketListener {
 											@Override
 											public void handleOption(Player player, int option) {
 												if(option == 1) {
-													int cost = BountyHunter.getValueForEmblems(player, true);
+													int cost = PvpHandler.getValueForEmblems(player, true);
 													player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
 													DialogueManager.start(player, 4);
 												} else {
@@ -92,7 +92,7 @@ public class NPCOptionPacketListener implements PacketListener {
 												}
 											}
 										});
-										int value = BountyHunter.getValueForEmblems(player, false);
+										int value = PvpHandler.getValueForEmblems(player, false);
 										if(value > 0) {
 											player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
 											DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");
@@ -239,7 +239,7 @@ public class NPCOptionPacketListener implements PacketListener {
 							@Override
 							public void handleOption(Player player, int option) {
 								if(option == 1) {
-									int cost = BountyHunter.getValueForEmblems(player, true);
+									int cost = PvpHandler.getValueForEmblems(player, true);
 									player.getPacketSender().sendMessage("@red@You have received "+cost+" blood money for your emblem(s).");
 									DialogueManager.start(player, 4);
 								} else {
@@ -247,7 +247,7 @@ public class NPCOptionPacketListener implements PacketListener {
 								}
 							}
 						});
-						int value = BountyHunter.getValueForEmblems(player, false);
+						int value = PvpHandler.getValueForEmblems(player, false);
 						if(value > 0) {
 							player.setDialogue(DialogueManager.getDialogues().get(10)); //Yes / no option
 							DialogueManager.sendStatement(player, "I will give you "+value+" blood money for those emblems. Agree?");

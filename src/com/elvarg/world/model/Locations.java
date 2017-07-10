@@ -2,7 +2,7 @@ package com.elvarg.world.model;
 
 import com.elvarg.world.entity.Entity;
 import com.elvarg.world.entity.combat.CombatFactory;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.impl.Character;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.player.Player;
@@ -23,7 +23,7 @@ public class Locations {
 	public static int PLAYERS_IN_WILD;
 
 	public enum Location {
-		WILDERNESS(new int[]{2940, 3392, 2986, 3012, 3653, 3720, 3650, 3653, 3150, 3199, 2994, 3041}, new int[]{3525, 3968, 10338, 10366, 3441, 3538, 3457, 3472, 3796, 3869, 3733, 3790}, false, true, true, true, true, true) {
+		WILDERNESS(new int[]{2940, 3392, 2986, 3012, 3653, 3720, 3650, 3653, 3150, 3199, 2994, 3041}, new int[]{3525, 3968, 10338, 10366, 3441, 3538, 3457, 3472, 3796, 3869, 3733, 3790}, false, true, true, true, true, true, false) {
 			@Override
 			public void process(Player player) {
 				int y = player.getPosition().getY();
@@ -33,7 +33,7 @@ public class Locations {
 
 			@Override
 			public void leave(Player player) {
-				BountyHunter.onLeave(player);
+				PvpHandler.onLeave(player);
 			}
 
 			@Override
@@ -43,7 +43,7 @@ public class Locations {
 
 			@Override
 			public void enter(Player player) {
-				BountyHunter.onEnter(player);
+				PvpHandler.onEnter(player);
 			}
 
 			@Override
@@ -64,7 +64,7 @@ public class Locations {
 					attacker.getMovementQueue().reset();
 					return false;
 				}
-				if(target.getLocation() != Location.WILDERNESS) {
+				if (!PvpHandler.PLAYERS_IN_PVP.contains(target)) {
 					attacker.getPacketSender().sendMessage("That player cannot be attacked, because they are not in the Wilderness.");
 					attacker.getMovementQueue().reset();
 					return false;
@@ -72,7 +72,7 @@ public class Locations {
 				return true;
 			}
 		},
-		GRAND_EXCHANGE(new int[]{3137, 3186, 3139, 3186, 3179, 3188, 3182, 3200, 3182, 3139, 3139, 3147, 3137, 3188}, new int[]{3468, 3472, 3473, 3473, 3478, 3486, 3487, 3516, 3494, 3507, 3473, 3516, 3507, 3516}, false, true, true, true, true, true) {
+		GRAND_EXCHANGE_PVP(new int[]{3137, 3186, 3139, 3186, 3179, 3188, 3182, 3200, 3182, 3139, 3139, 3147, 3137, 3188}, new int[]{3468, 3472, 3473, 3473, 3478, 3486, 3487, 3516, 3494, 3507, 3473, 3516, 3507, 3516}, false, true, true, true, true, true, false) {
 			@Override
 			public void process(Player player) {
 				player.getPacketSender().sendWalkableInterface(21200);
@@ -80,7 +80,7 @@ public class Locations {
 
 			@Override
 			public void leave(Player player) {
-				BountyHunter.onLeave(player);
+				PvpHandler.onLeave(player);
 			}
 
 			@Override
@@ -90,7 +90,7 @@ public class Locations {
 
 			@Override
 			public void enter(Player player) {
-				BountyHunter.onEnter(player);
+				PvpHandler.onEnter(player);
 				player.getPacketSender().sendMessage("@red@Welcome to Safe Pking. You will NOT lose your items here!");
 			}
 
@@ -101,10 +101,15 @@ public class Locations {
 
 			@Override
 			public boolean canAttack(Player attacker, Player target) {
+				if (!PvpHandler.PLAYERS_IN_PVP.contains(target)) {
+					attacker.getPacketSender().sendMessage("That player cannot be attacked, because they are not in the Pvp Area..");
+					attacker.getMovementQueue().reset();
+					return false;
+				}
 				return true;
 			}
 		},
-		VARROCK(new int[]{3101, 3268, 3187, 3234}, new int[]{3448, 3468, 3458, 3506}, false, true, true, true, true, true) {
+		VARROCK(new int[]{3101, 3268, 3187, 3234, 3115, 3179, 3165, 3250, 3191, 3200}, new int[]{3448, 3468, 3458, 3506, 3392, 3447, 3390, 3432, 3432, 3460}, false, true, true, true, true, true, false) {
 			@Override
 			public void process(Player player) {
 				player.getPacketSender().sendWalkableInterface(21200);
@@ -112,7 +117,7 @@ public class Locations {
 
 			@Override
 			public void leave(Player player) {
-				BountyHunter.onLeave(player);
+				PvpHandler.onLeave(player);
 			}
 
 			@Override
@@ -122,7 +127,7 @@ public class Locations {
 
 			@Override
 			public void enter(Player player) {
-				BountyHunter.onEnter(player);
+				PvpHandler.onEnter(player);
 			}
 
 			@Override
@@ -132,10 +137,15 @@ public class Locations {
 
 			@Override
 			public boolean canAttack(Player attacker, Player target) {
+				if (!PvpHandler.PLAYERS_IN_PVP.contains(target)) {
+					attacker.getPacketSender().sendMessage("That player cannot be attacked, because they are not in the Pvp Area..");
+					attacker.getMovementQueue().reset();
+					return false;
+				}
 				return true;
 			}
 		},
-		DEFAULT(null, null, false, true, true, true, true, true) {
+		DEFAULT(null, null, false, true, true, true, true, true, true) {
 			@Override
 			public void process(Player p) {
 				p.getPacketSender().sendWalkableInterface(21300);
@@ -166,7 +176,7 @@ public class Locations {
 			}
 		};
 
-		Location(int[] x, int[] y, boolean multi, boolean summonAllowed, boolean followingAllowed, boolean cannonAllowed, boolean firemakingAllowed, boolean aidingAllowed) {
+		Location(int[] x, int[] y, boolean multi, boolean summonAllowed, boolean followingAllowed, boolean cannonAllowed, boolean firemakingAllowed, boolean aidingAllowed, boolean spawningallowed) {
 			this.x = x;
 			this.y = y;
 			this.multi = multi;
@@ -175,6 +185,7 @@ public class Locations {
 			this.cannonAllowed = cannonAllowed;
 			this.firemakingAllowed = firemakingAllowed;
 			this.aidingAllowed = aidingAllowed;
+			this.spawningallowed = spawningallowed;
 		}
 
 		private int[] x, y;
@@ -184,6 +195,7 @@ public class Locations {
 		private boolean cannonAllowed;
 		private boolean firemakingAllowed;
 		private boolean aidingAllowed;
+		private boolean spawningallowed;
 
 		public int[] getX() {
 			return x;
@@ -204,6 +216,10 @@ public class Locations {
 
 		public boolean isSummoningAllowed() {
 			return summonAllowed;
+		}
+
+		public boolean isSpawningAllowed() {
+			return spawningallowed;
 		}
 
 		public boolean isFollowingAllowed() {
@@ -287,6 +303,10 @@ public class Locations {
 		public void leave(Player player) {
 
 		}
+
+        public void canSpawn(Player player) {
+
+        }
 
 		public void logout(Player player) {
 

@@ -1,16 +1,16 @@
 package com.elvarg.world.content;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.model.Position;
 import com.elvarg.world.model.dialogue.DialogueManager;
 import com.elvarg.world.model.dialogue.DialogueOptions;
 import com.elvarg.world.model.teleportation.TeleportHandler;
 import com.elvarg.world.model.teleportation.TeleportType;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class TeleportsInterface {
 
@@ -154,7 +154,7 @@ public class TeleportsInterface {
 					player.getPacketSender().sendMessage("You have to learn this spell from the Emblem trader first.");
 					return true;
 				}
-				Optional<Player> target = BountyHunter.getTargetFor(player);
+				Optional<Player> target = PvpHandler.getTargetFor(player);
 				if(!target.isPresent()) {
 					player.getPacketSender().sendMessage("You don't currently have a target.");
 					return true;

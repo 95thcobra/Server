@@ -1,10 +1,6 @@
 
 package com.elvarg.world.entity.impl.player;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.elvarg.GameConstants;
 import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.definitions.WeaponInterfaces;
@@ -20,54 +16,29 @@ import com.elvarg.util.FrameUpdater;
 import com.elvarg.util.Misc;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.world.World;
-import com.elvarg.world.content.BossPets;
-import com.elvarg.world.content.Dueling;
-import com.elvarg.world.content.Feed;
-import com.elvarg.world.content.PrayerHandler;
+import com.elvarg.world.content.*;
 import com.elvarg.world.content.PrayerHandler.PrayerData;
-import com.elvarg.world.content.Presetables;
-import com.elvarg.world.content.QuickPrayers;
-import com.elvarg.world.content.SkillManager;
-import com.elvarg.world.content.Toplist;
-import com.elvarg.world.content.Trading;
 import com.elvarg.world.content.clan.ClanChat;
 import com.elvarg.world.content.clan.ClanChatManager;
 import com.elvarg.world.entity.combat.CombatFactory;
 import com.elvarg.world.entity.combat.CombatSpecial;
 import com.elvarg.world.entity.combat.CombatType;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.combat.magic.Autocasting;
 import com.elvarg.world.entity.impl.Character;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.npc.NpcAggression;
-import com.elvarg.world.model.Animation;
-import com.elvarg.world.model.Appearance;
-import com.elvarg.world.model.BossPet;
-import com.elvarg.world.model.ChatMessage;
-import com.elvarg.world.model.EffectTimer;
-import com.elvarg.world.model.Flag;
-import com.elvarg.world.model.ForceMovement;
-import com.elvarg.world.model.Item;
-import com.elvarg.world.model.Locations;
-import com.elvarg.world.model.MagicSpellbook;
-import com.elvarg.world.model.PlayerInteractingOption;
-import com.elvarg.world.model.PlayerRelations;
-import com.elvarg.world.model.PlayerRights;
-import com.elvarg.world.model.PlayerStatus;
-import com.elvarg.world.model.Presetable;
-import com.elvarg.world.model.SecondsTimer;
-import com.elvarg.world.model.Skill;
-import com.elvarg.world.model.SkullType;
-import com.elvarg.world.model.container.impl.Bank;
-import com.elvarg.world.model.container.impl.Equipment;
-import com.elvarg.world.model.container.impl.Inventory;
-import com.elvarg.world.model.container.impl.PriceChecker;
-import com.elvarg.world.model.container.impl.Shop;
+import com.elvarg.world.model.*;
+import com.elvarg.world.model.container.impl.*;
 import com.elvarg.world.model.dialogue.Dialogue;
 import com.elvarg.world.model.dialogue.DialogueOptions;
 import com.elvarg.world.model.equipment.BonusManager;
 import com.elvarg.world.model.movement.MovementStatus;
 import com.elvarg.world.model.syntax.EnterSyntax;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Player extends Character {
@@ -199,7 +170,7 @@ public class Player extends Character {
 		getCombat().onTick();
 
 		//Process Bounty Hunter
-		BountyHunter.onTick(this);
+		PvpHandler.onTick(this);
 
 		//Process locations
 		Locations.onTick(this);
@@ -324,7 +295,7 @@ public class Player extends Character {
 		//Do stuff...
 		BossPets.pickup(this, getCurrentPet());
 		getRelations().updateLists(false);
-		BountyHunter.unassign(this);
+		PvpHandler.unassign(this);
 		getPacketSender().sendLogout();
 		getPacketSender().sendInterfaceRemoval();
 		ClanChatManager.leave(this, false);

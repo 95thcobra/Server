@@ -40,6 +40,11 @@ public class GameConstants {
 	public static final int GAME_VERSION = 1;
 
 	/**
+	 * The game debug mode.
+	 */
+	public static boolean debug = true;
+
+	/**
 	 * The secure game UID /Unique Identifier/ 
 	 */
 	public static final int GAME_UID = 7 >> 1096;

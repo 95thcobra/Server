@@ -18,7 +18,7 @@ import com.elvarg.world.content.Toplist;
 import com.elvarg.world.content.clan.ClanChatManager;
 import com.elvarg.world.entity.combat.CombatFactory;
 import com.elvarg.world.entity.combat.CombatSpecial;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.object.GameObject;
 import com.elvarg.world.entity.impl.player.Player;
@@ -142,7 +142,7 @@ public class CommandPacketListener implements PacketListener {
 		} else if(parts[0].startsWith("claim")) {
 			player.getPacketSender().sendMessage("To claim purchased items, please talk to the Financial Advisor at home.");
 		} else if(parts[0].startsWith("players")) {
-			player.getPacketSender().sendMessage("There are currently "+World.getPlayers().size()+" players online and "+BountyHunter.PLAYERS_IN_WILD.size()+" players in the Wilderness.");
+			player.getPacketSender().sendMessage("There are currently "+World.getPlayers().size()+" players online and "+ PvpHandler.PLAYERS_IN_PVP.size()+" players in the Wilderness.");
 		} else if(parts[0].startsWith("kdr")) {
 			player.forceChat("I currently have "+player.getKillDeathRatio()+" kdr!");
 		} else if(parts[0].equals("changepassword")) {

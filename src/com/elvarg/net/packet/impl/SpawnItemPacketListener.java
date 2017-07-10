@@ -5,7 +5,6 @@ import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketListener;
 import com.elvarg.world.entity.impl.player.Player;
-import com.elvarg.world.model.Locations.Location;
 import com.elvarg.world.model.container.impl.Bank;
 import com.elvarg.world.model.syntax.impl.SpawnX;
 
@@ -34,7 +33,7 @@ public class SpawnItemPacketListener implements PacketListener {
 		}
 
 		//Check if player busy..
-		if(player.busy() || player.getLocation() == Location.WILDERNESS || player.getLocation() == Location.GRAND_EXCHANGE || player.getLocation() == Location.VARROCK) {
+		if (player.busy() || !player.getLocation().isSpawningAllowed()) {
 			player.getPacketSender().sendMessage("You cannot do that right now.");
 			return;
 		}
