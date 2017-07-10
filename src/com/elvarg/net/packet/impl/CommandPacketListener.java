@@ -40,7 +40,7 @@ import java.io.IOException;
 /**
  * This packet listener manages commands a player uses by using the
  * command console prompted by using the "`" char.
- * 
+ *
  * @author Gabriel Hannason
  */
 
@@ -66,36 +66,36 @@ public class CommandPacketListener implements PacketListener {
 
 			command = command.toLowerCase();
 			switch(player.getRights()) {
-			case PLAYER:
-				playerCommands(player, command, parts);
-				break;
-			case DONATOR:
-			case SUPER_DONATOR:
-			case LEGENDARY_DONATOR:
-			case YOUTUBER:
-				playerCommands(player, command, parts);
-				donorCommands(player, command, parts);
-				break;
-			case MODERATOR:
-				playerCommands(player, command, parts);
-				donorCommands(player, command, parts);
-				modCommands(player, command, parts);
-				break;
-			case ADMINISTRATOR:
-				playerCommands(player, command, parts);
-				donorCommands(player, command, parts);
-				modCommands(player, command, parts);
-				adminCommands(player, command, parts);
-				break;
-			case DEVELOPER:
-			case OWNER:
-				playerCommands(player, command, parts);
-				donorCommands(player, command, parts);
-				modCommands(player, command, parts);
-				adminCommands(player, command, parts);
-				devCommands(player, command, parts);
-				ownerCommands(player, command, parts);
-				break;
+				case PLAYER:
+					playerCommands(player, command, parts);
+					break;
+				case DONATOR:
+				case SUPER_DONATOR:
+				case LEGENDARY_DONATOR:
+				case YOUTUBER:
+					playerCommands(player, command, parts);
+					donorCommands(player, command, parts);
+					break;
+				case MODERATOR:
+					playerCommands(player, command, parts);
+					donorCommands(player, command, parts);
+					modCommands(player, command, parts);
+					break;
+				case ADMINISTRATOR:
+					playerCommands(player, command, parts);
+					donorCommands(player, command, parts);
+					modCommands(player, command, parts);
+					adminCommands(player, command, parts);
+					break;
+				case DEVELOPER:
+				case OWNER:
+					playerCommands(player, command, parts);
+					donorCommands(player, command, parts);
+					modCommands(player, command, parts);
+					adminCommands(player, command, parts);
+					devCommands(player, command, parts);
+					ownerCommands(player, command, parts);
+					break;
 			}
 
 		} catch (Exception exception) {
@@ -159,17 +159,19 @@ public class CommandPacketListener implements PacketListener {
 			}
 		} else if(parts[0].startsWith("claim")) {
 			try{
-				player.LotusPay(player, player.getUsername());
+				player.lotusPay(player, player.getUsername());
 				return true;
-			}catch(Exception e){}
-		}
-			if(parts[0].contains("red")) {
-				CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
-			} else {
-				CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
+			} catch(Exception e){
+				e.printStackTrace();
 			}
-			return false;
 		}
+		if(parts[0].contains("red")) {
+			CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
+		} else {
+			CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
+		}
+		return false;
+	}
 
 	private static void donorCommands(Player player, String command, String[] parts) {
 		if(parts[0].startsWith("yell")) {

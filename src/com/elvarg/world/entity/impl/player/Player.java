@@ -1,14 +1,6 @@
 
 package com.elvarg.world.entity.impl.player;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.elvarg.GameConstants;
 import com.elvarg.definitions.ItemDefinition;
 import com.elvarg.definitions.WeaponInterfaces;
@@ -24,54 +16,33 @@ import com.elvarg.util.FrameUpdater;
 import com.elvarg.util.Misc;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.world.World;
-import com.elvarg.world.content.BossPets;
-import com.elvarg.world.content.Dueling;
-import com.elvarg.world.content.Feed;
-import com.elvarg.world.content.PrayerHandler;
+import com.elvarg.world.content.*;
 import com.elvarg.world.content.PrayerHandler.PrayerData;
-import com.elvarg.world.content.Presetables;
-import com.elvarg.world.content.QuickPrayers;
-import com.elvarg.world.content.SkillManager;
-import com.elvarg.world.content.Toplist;
-import com.elvarg.world.content.Trading;
 import com.elvarg.world.content.clan.ClanChat;
 import com.elvarg.world.content.clan.ClanChatManager;
 import com.elvarg.world.entity.combat.CombatFactory;
 import com.elvarg.world.entity.combat.CombatSpecial;
 import com.elvarg.world.entity.combat.CombatType;
-import com.elvarg.world.entity.combat.bountyhunter.BountyHunter;
+import com.elvarg.world.entity.combat.bountyhunter.PvpHandler;
 import com.elvarg.world.entity.combat.magic.Autocasting;
 import com.elvarg.world.entity.impl.Character;
 import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.npc.NpcAggression;
-import com.elvarg.world.model.Animation;
-import com.elvarg.world.model.Appearance;
-import com.elvarg.world.model.BossPet;
-import com.elvarg.world.model.ChatMessage;
-import com.elvarg.world.model.EffectTimer;
-import com.elvarg.world.model.Flag;
-import com.elvarg.world.model.ForceMovement;
-import com.elvarg.world.model.Item;
-import com.elvarg.world.model.Locations;
-import com.elvarg.world.model.MagicSpellbook;
-import com.elvarg.world.model.PlayerInteractingOption;
-import com.elvarg.world.model.PlayerRelations;
-import com.elvarg.world.model.PlayerRights;
-import com.elvarg.world.model.PlayerStatus;
-import com.elvarg.world.model.Presetable;
-import com.elvarg.world.model.SecondsTimer;
-import com.elvarg.world.model.Skill;
-import com.elvarg.world.model.SkullType;
-import com.elvarg.world.model.container.impl.Bank;
-import com.elvarg.world.model.container.impl.Equipment;
-import com.elvarg.world.model.container.impl.Inventory;
-import com.elvarg.world.model.container.impl.PriceChecker;
-import com.elvarg.world.model.container.impl.Shop;
+import com.elvarg.world.model.*;
+import com.elvarg.world.model.container.impl.*;
 import com.elvarg.world.model.dialogue.Dialogue;
 import com.elvarg.world.model.dialogue.DialogueOptions;
 import com.elvarg.world.model.equipment.BonusManager;
 import com.elvarg.world.model.movement.MovementStatus;
 import com.elvarg.world.model.syntax.EnterSyntax;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Player extends Character {
@@ -190,20 +161,20 @@ public class Player extends Character {
 
 		//Process walking queue..
 		getMovementQueue().onTick();
-		
+
 		//Process walk to task..
 		if(walkToTask != null) {
 			walkToTask.onTick();
 		}
-		
+
 		//Process aggression
 		NpcAggression.onTick(this);
-		
+
 		//Process combat
 		getCombat().onTick();
 
 		//Process Bounty Hunter
-		BountyHunter.onTick(this);
+		PvpHandler.onTick(this);
 
 		//Process locations
 		Locations.onTick(this);
@@ -214,7 +185,7 @@ public class Player extends Character {
 			getInventory().refreshItems();
 			setUpdateInventory(false);
 		}
-		
+
 		//Updates appearance if an update
 		//has been requested
 		//or if skull timer hits 0.
@@ -222,7 +193,7 @@ public class Player extends Character {
 			getUpdateFlag().flag(Flag.PLAYER_APPEARANCE);
 			setQueuedAppearanceUpdate(false);
 		}
-		
+
 		/**
 		 * Decrease boosted stats
 		 * Increase lowered stats
@@ -272,7 +243,7 @@ public class Player extends Character {
 				}
 				if(decreaseStats.secondsElapsed() >= (PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72 : 60)) {
 					decreaseStats.start((PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72 : 60));
-				}			
+				}
 			}
 		}
 	}
@@ -324,11 +295,11 @@ public class Player extends Character {
 		if(getDueling().inDuel()) {
 			getDueling().duelLost();
 		}
-		
+
 		//Do stuff...
 		BossPets.pickup(this, getCurrentPet());
 		getRelations().updateLists(false);
-		BountyHunter.unassign(this);
+		PvpHandler.unassign(this);
 		getPacketSender().sendLogout();
 		getPacketSender().sendInterfaceRemoval();
 		ClanChatManager.leave(this, false);
@@ -359,7 +330,7 @@ public class Player extends Character {
 
 		//Update session state
 		getSession().setState(SessionState.LOGGED_IN);
-		
+
 		//Packets
 		getPacketSender().sendMapRegion().sendDetails(); //Map region, player index and player rights
 		getPacketSender().sendTabs(); //Client sideicons
@@ -405,7 +376,7 @@ public class Player extends Character {
 
 		//Update weapon interface configs
 		getPacketSender().sendConfig(getCombat().getFightType().getParentId(), getCombat().getFightType().getChildId())
-		.sendConfig(172, getCombat().autoRetaliate() ? 1 : 0).updateSpecialAttackOrb();
+				.sendConfig(172, getCombat().autoRetaliate() ? 1 : 0).updateSpecialAttackOrb();
 
 		//Reset autocasting
 		Autocasting.setAutocast(this, null);
@@ -421,11 +392,11 @@ public class Player extends Character {
 
 		//Send pvp stats..
 		getPacketSender().
-		sendString(52029, "@or1@Killstreak: "+getKillstreak()).
-		sendString(52030, "@or1@Kills: "+getTotalKills()).
-		sendString(52031, "@or1@Deaths: "+getDeaths()).
-		sendString(52033, "@or1@K/D Ratio: "+getKillDeathRatio()).
-		sendString(52034, "@or1@Donated: "+getAmountDonated());
+				sendString(52029, "@or1@Killstreak: "+getKillstreak()).
+				sendString(52030, "@or1@Kills: "+getTotalKills()).
+				sendString(52031, "@or1@Deaths: "+getDeaths()).
+				sendString(52033, "@or1@K/D Ratio: "+getKillDeathRatio()).
+				sendString(52034, "@or1@Donated: "+getAmountDonated());
 
 		//Join clanchat
 		ClanChatManager.onLogin(this);
@@ -439,19 +410,19 @@ public class Player extends Character {
 		}
 
 		if(!getCombat().getFreezeTimer().finished()) {
-			getPacketSender().sendEffectTimer(getCombat().getFreezeTimer().secondsRemaining(), 
+			getPacketSender().sendEffectTimer(getCombat().getFreezeTimer().secondsRemaining(),
 					EffectTimer.FREEZE);
 		}
 		if(!getVengeanceTimer().finished()) {
-			getPacketSender().sendEffectTimer(getVengeanceTimer().secondsRemaining(), 
+			getPacketSender().sendEffectTimer(getVengeanceTimer().secondsRemaining(),
 					EffectTimer.VENGEANCE);
 		}
 		if(!getCombat().getFireImmunityTimer().finished()) {
-			getPacketSender().sendEffectTimer(getCombat().getFireImmunityTimer().secondsRemaining(), 
+			getPacketSender().sendEffectTimer(getCombat().getFireImmunityTimer().secondsRemaining(),
 					EffectTimer.ANTIFIRE);
 		}
 		if(!getCombat().getTeleBlockTimer().finished()) {
-			getPacketSender().sendEffectTimer(getCombat().getTeleBlockTimer().secondsRemaining(), 
+			getPacketSender().sendEffectTimer(getCombat().getTeleBlockTimer().secondsRemaining(),
 					EffectTimer.TELE_BLOCK);
 		}
 
@@ -481,7 +452,7 @@ public class Player extends Character {
 					getSpecialAttackRestore().start(120);
 				} else {
 					getPacketSender().sendMessage("@red@You must wait another "+getSpecialAttackRestore().secondsRemaining()+" seconds to restore special attack energy.").
-					sendMessage("@red@Don't feel like waiting? Pick up Bluryberry's special from the Emblem trader's shop!");
+							sendMessage("@red@Don't feel like waiting? Pick up Bluryberry's special from the Emblem trader's shop!");
 				}
 			}
 		}
@@ -509,10 +480,10 @@ public class Player extends Character {
 		getUpdateFlag().flag(Flag.PLAYER_APPEARANCE);
 		isDying = false;
 		getPacketSender().
-		sendEffectTimer(0, EffectTimer.ANTIFIRE).
-		sendEffectTimer(0, EffectTimer.FREEZE).
-		sendEffectTimer(0, EffectTimer.VENGEANCE).
-		sendEffectTimer(0, EffectTimer.TELE_BLOCK);
+				sendEffectTimer(0, EffectTimer.ANTIFIRE).
+				sendEffectTimer(0, EffectTimer.FREEZE).
+				sendEffectTimer(0, EffectTimer.VENGEANCE).
+				sendEffectTimer(0, EffectTimer.TELE_BLOCK);
 	}
 
 	public boolean busy() {
@@ -573,7 +544,7 @@ public class Player extends Character {
 	public final SecondsTimer increaseStats = new SecondsTimer();
 	public final SecondsTimer decreaseStats = new SecondsTimer();
 
-	private int destroyItem = -1;	
+	private int destroyItem = -1;
 	private boolean updateInventory; //Updates inventory on next tick
 	private boolean queuedAppearanceUpdate; //Updates appearance on next tick
 	private boolean newPlayer;
@@ -588,7 +559,7 @@ public class Player extends Character {
 	private int skullTimer;
 	private int points;
 	private int amountDonated;
-	
+
 	//Blowpipe
 	private int blowpipeScales;
 
@@ -774,7 +745,7 @@ public class Player extends Character {
 	}
 
 	public void setWalkableInterfaceId(int interfaceId2) {
-		this.walkableInterfaceId = interfaceId2;		
+		this.walkableInterfaceId = interfaceId2;
 	}
 
 	public Player setRunning(boolean isRunning) {
@@ -826,11 +797,11 @@ public class Player extends Character {
 
 	public Player setForceMovement(ForceMovement forceMovement) {
 		this.forceMovement = forceMovement;
-		
+
 		if(forceMovement != null) {
 			getUpdateFlag().flag(Flag.FORCED_MOVEMENT);
 		}
-		
+
 		return this;
 	}
 
@@ -1332,11 +1303,11 @@ public class Player extends Character {
 	public void incrementBlowpipeScales(int blowpipeScales) {
 		this.blowpipeScales += blowpipeScales;
 	}
-	
+
 	public int decrementAndGetBlowpipeScales() {
 		return this.blowpipeScales--;
 	}
-	
+
 	public void setBlowpipeScales(int blowpipeScales) {
 		this.blowpipeScales = blowpipeScales;
 	}
@@ -1352,30 +1323,33 @@ public class Player extends Character {
 	public SecondsTimer getAggressionTolerance() {
 		return aggressionTolerance;
 	}
-	public void LotusPay(Player player, String username){
+
+	public void lotusPay(Player player, String username){
 		try{
-		username = username.replaceAll(" ","_");
-		String secret = "4d13663a588db08245fa44e863b814fe";
-		URL url = new URL("http://app.gpay.io/api/runescape/"+username+"/"+secret);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-		String results = reader.readLine();
-		if(results.toLowerCase().contains("!error:")){
+			username = username.replaceAll(" ","_");
+			String secret = "4d13663a588db08245fa44e863b814fe";
+			URL url = new URL("http://app.gpay.io/api/runescape/"+username+"/"+secret);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+			String results = reader.readLine();
+			if(results.toLowerCase().contains("!error:")){
 
-		}else{
-		String[] ary = results.split(",");
-		     for(int i = 0; i < ary.length; i++){
-		            switch(ary[i]){
-		                case "0":
-		                	player.getPacketSender().sendMessage("@red@Your donation has not been found message a staff member.@red@");
-		                break;
-		                    case "19635": //claws
-		                    	player.setRights(PlayerRights.DONATOR);
-		        				player.getPacketSender().sendMessage("@gre@Thank-you for Donating! You've Recieved Donator Rank!@gre@");
-		                    break;
+			}else{
+				String[] ary = results.split(",");
+				for(int i = 0; i < ary.length; i++){
+					switch(ary[i]){
+						case "0":
+							player.getPacketSender().sendMessage("@red@Your donation has not been found message a staff member.@red@");
+							break;
+						case "19635": //claws
+							player.setRights(PlayerRights.DONATOR);
+							player.getPacketSender().sendMessage("@gre@Thank-you for Donating! You've Recieved Donator Rank!@gre@");
+							break;
 
-		            }
-		    }
+					}
+				}
+			}
+		}catch(IOException e){
+			e.printStackTrace();
 		}
-		}catch(IOException e){}
-		}							
+	}
 }
