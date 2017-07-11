@@ -37,7 +37,7 @@ public class GameConstants {
 	/**
 	 * The current game/client version.
 	 */
-	public static final int GAME_VERSION = 1;
+	public static final int GAME_VERSION = 12241;
 
 	/**
 	 * The game debug mode.

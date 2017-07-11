@@ -23,18 +23,9 @@ import com.elvarg.world.entity.impl.npc.NPC;
 import com.elvarg.world.entity.impl.object.GameObject;
 import com.elvarg.world.entity.impl.player.Player;
 import com.elvarg.world.entity.impl.player.PlayerSaving;
-import com.elvarg.world.model.Animation;
-import com.elvarg.world.model.Flag;
-import com.elvarg.world.model.Graphic;
-import com.elvarg.world.model.Item;
-import com.elvarg.world.model.PlayerRights;
-import com.elvarg.world.model.Position;
-import com.elvarg.world.model.Skill;
-import com.elvarg.world.model.SkullType;
+import com.elvarg.world.model.*;
 import com.elvarg.world.model.container.impl.Bank;
 import com.elvarg.world.model.dialogue.DialogueManager;
-
-import java.io.IOException;
 
 
 /**
@@ -111,7 +102,7 @@ public class CommandPacketListener implements PacketListener {
 		}
 	}
 
-	private static boolean playerCommands(Player player, String command, String[] parts) {
+	private static void playerCommands(Player player, String command, String[] parts) {
 		if(parts[0].startsWith("lockxp")) {
 			player.setExperienceLocked(!player.experienceLocked());
 			player.getPacketSender().sendMessage("Lock: "+player.experienceLocked());
@@ -120,26 +111,25 @@ public class CommandPacketListener implements PacketListener {
 		} else if(parts[0].startsWith("veng")) {
 			if(player.busy()) {
 				player.getPacketSender().sendMessage("You cannot do that right now.");
-				return false;
+				return;
 			}
 			if(player.getInventory().getFreeSlots() < 3) {
 				player.getPacketSender().sendMessage("You don't have enough free inventory space to do that.");
-				return false;
+				return;
 			}
 			player.getInventory().add(9075, 1000).add(557, 1000).add(560, 1000);
 		} else if(parts[0].startsWith("barrage")) {
 			if(player.busy()) {
 				player.getPacketSender().sendMessage("You cannot do that right now.");
-				return false;
+				return;
 			}
 			if(player.getInventory().getFreeSlots() < 3) {
 				player.getPacketSender().sendMessage("You don't have enough free inventory space to do that.");
-				return false;
+				return;
 			}
 			player.getInventory().add(565, 1000).add(555, 1000).add(560, 1000);
 		} else if(parts[0].startsWith("donate") || parts[0].startsWith("store")) {
-			player.getPacketSender().sendURL("http://lotuspk.com/store");
-			//player.getPacketSender().sendMessage("To claim purchased items, please talk to the Financial Advisor at home.");
+			player.getPacketSender().sendURL("http://osrspk.com/store");
 		} else if(parts[0].startsWith("players")) {
 			player.getPacketSender().sendMessage("There are currently "+World.getPlayers().size()+" players online and "+ PvpHandler.PLAYERS_IN_PVP.size()+" players in the Wilderness.");
 		} else if(parts[0].startsWith("kdr")) {
@@ -152,26 +142,23 @@ public class CommandPacketListener implements PacketListener {
 			} else {
 				player.getPacketSender().sendMessage("Invalid password input.");
 			}
+		} else if (parts[0].equals("claim")) {
+			try {
+				player.lotusPay(player, player.getUsername());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if(parts[0].startsWith("skull") || parts[0].startsWith("redskull")) {
 			if(CombatFactory.inCombat(player)) {
 				player.getPacketSender().sendMessage("You cannot change that during combat!");
-				return false;
+				return;
 			}
-		} else if(parts[0].startsWith("claim")) {
-			try{
-				player.lotusPay(player, player.getUsername());
-				return true;
-			} catch(Exception e){
-				e.printStackTrace();
+			if(parts[0].contains("red")) {
+				CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
+			} else {
+				CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
 			}
 		}
-		if(parts[0].contains("red")) {
-			CombatFactory.skull(player, SkullType.RED_SKULL, (60 * 30)); //Should be 30 mins
-			return true;
-		} else {
-			CombatFactory.skull(player, SkullType.WHITE_SKULL, 300); //Should be 5 mins
-		}
-		return false;
 	}
 
 	private static void donorCommands(Player player, String command, String[] parts) {
@@ -550,12 +537,6 @@ public class CommandPacketListener implements PacketListener {
 						}
 						ClanChatManager.save();
 						Server.getLogger().info("Update task finished!");
-						try {
-							Runtime.getRuntime().exec("cmd /c start Server.jar");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						System.exit(1);
 						stop();
 					}
 				});

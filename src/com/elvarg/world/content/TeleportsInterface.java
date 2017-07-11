@@ -69,8 +69,7 @@ public class TeleportsInterface {
 		BOSSES(38300, 38105, 801),
 		SKILLS(38400, 38108, 802),
 		MINIGAMES(38500, 38111, 803),
-		WILDERNESS(38600, 38114, 804)
-		;
+		WILDERNESS(38600, 38114, 804);
 
 		InterfaceData(int interfaceId, int button, int config) {
 			this.interfaceId = interfaceId;

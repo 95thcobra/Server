@@ -1324,7 +1324,8 @@ public class Player extends Character {
 		return aggressionTolerance;
 	}
 
-	public void lotusPay(Player player, String username){
+	public void
+	lotusPay(Player player, String username){
 		try{
 			username = username.replaceAll(" ","_");
 			String secret = "4d13663a588db08245fa44e863b814fe";
